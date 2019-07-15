@@ -1,5 +1,9 @@
-#include <vector>
+#include "accuracy.hpp"
+
+#include <algorithm>
 #include <iostream>
+#include <numeric>
+#include <vector>
 
 void compute_accuracy(double* as, bool* attack, int timeNum, int topN)
 {
@@ -28,10 +32,9 @@ void compute_accuracy(double* as, bool* attack, int timeNum, int topN)
 
     double precision = double(tp)/(tp+fp);
     double recall = double(tp)/(tp+fn);
-    double f1 = 2*precision*recall/(precision+recall);
-    double TPR = double(tp)/(tp+fn);
-    double FPR = double(fp)/(fp+tn);
+    //double f1 = 2*precision*recall/(precision+recall);
+    //double TPR = double(tp)/(tp+fn);
+    //double FPR = double(fp)/(fp+tn);
 
     std::cout << "[TOP" << topN << "] precision: " << precision << ", recall: " << recall << std::endl;
 }
-

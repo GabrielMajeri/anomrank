@@ -1,8 +1,9 @@
-#include <iostream>
-#include <fstream>
-#include "edge.hpp"
+#include "read_data.hpp"
 
-using namespace std;
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include "edge.hpp"
 
 struct compare_edge
 {
@@ -12,23 +13,23 @@ struct compare_edge
     }
 };
 
-void read_data(string path, string delimiter, int stepSize, vector<timeEdge>& edges, vector<int>& snapshots, int& n, int& m, int& timeNum)
+void read_data(std::string path, std::string delimiter, int stepSize, std::vector<timeEdge>& edges, std::vector<int>& snapshots, int& n, int& m, int& timeNum)
 {
-    vector<int> nodes;
-    vector<int> times;
+    std::vector<int> nodes;
+    std::vector<int> times;
 
-    ifstream graphFile(path.c_str());
-    string line;
+    std::ifstream graphFile(path.c_str());
+    std::string line;
     while(getline(graphFile, line))
     {
         size_t pos = 0;
-        vector<int> tokens;
-        while ((pos = line.find(delimiter)) != string::npos)
+        std::vector<int> tokens;
+        while ((pos = line.find(delimiter)) != std::string::npos)
         {
-            tokens.push_back(stoi(line.substr(0, pos)));
+            tokens.push_back(std::stoi(line.substr(0, pos)));
             line.erase(0, pos + delimiter.length());
         }
-        tokens.push_back(stoi(line));
+        tokens.push_back(std::stoi(line));
 
         edges.push_back(timeEdge(tokens));
         times.push_back(tokens[0]);
@@ -38,13 +39,13 @@ void read_data(string path, string delimiter, int stepSize, vector<timeEdge>& ed
 
     graphFile.close();
 
-    sort(edges.begin(), edges.end(), compare_edge());
-    sort(times.begin(), times.end());
-    sort(nodes.begin(), nodes.end());
+    std::sort(edges.begin(), edges.end(), compare_edge());
+    std::sort(times.begin(), times.end());
+    std::sort(nodes.begin(), nodes.end());
 
     int initial_time = times[0];
     int initial_node = nodes[0];
-    for(int i = 0; i < edges.size(); i++)
+    for(size_t i = 0; i < edges.size(); i++)
     {
         edges[i].t -= initial_time;
         edges[i].src -= initial_node;
@@ -56,7 +57,7 @@ void read_data(string path, string delimiter, int stepSize, vector<timeEdge>& ed
     timeNum = times[times.size()-1] - initial_time + 1;
 
     int step = 1;
-    for(int i = 0; i < edges.size(); i++)
+    for(size_t i = 0; i < edges.size(); i++)
     {
         if(edges[i].t > step*stepSize)
         {
@@ -65,6 +66,7 @@ void read_data(string path, string delimiter, int stepSize, vector<timeEdge>& ed
 
         }
     }
-    if(step != *(snapshots.end()))
+    if (!snapshots.empty() && step != *(snapshots.rbegin())) {
         snapshots.push_back(step);
+    }
 }

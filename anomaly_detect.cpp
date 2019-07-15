@@ -1,6 +1,7 @@
-#include <cmath>
+#include "anomaly_detect.hpp"
 
-using namespace std;
+#include <algorithm>
+#include <cmath>
 
 double score_absum(double* s, int n)
 {
@@ -122,4 +123,3 @@ double compute_anomaly_score(int t, double** pagerank1, double** pagerank2, doub
 
     return score;
 }
-

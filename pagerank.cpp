@@ -1,6 +1,8 @@
+#include "pagerank.hpp"
 #include "edge.hpp"
 #include <cmath>
 #include <vector>
+
 #define EPSILON  0.001
 #define c 0.5
 

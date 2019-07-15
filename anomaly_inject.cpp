@@ -1,9 +1,11 @@
+#include "anomaly_inject.hpp"
 #include "edge.hpp"
+#include <algorithm>
 
 void inject(outEdge* A, int u, int v, int num)
 {
     bool inserted = false;
-    for(int nb = 0; nb < A[u].out.size(); nb++)
+    for(size_t nb = 0; nb < A[u].out.size(); nb++)
     {
         if(A[u].out[nb] != v)
             continue;
@@ -21,7 +23,7 @@ void inject(outEdge* A, int u, int v, int num)
     }
 }
 
-double inject_anomaly(int scenario, outEdge* A, int n, int edgeNum)
+double inject_anomaly(int scenario, outEdge* A, size_t n, size_t edgeNum)
 {
     switch(scenario){
         case 1: // add whole weights to one edge
@@ -45,15 +47,15 @@ double inject_anomaly(int scenario, outEdge* A, int n, int edgeNum)
 
             if(edgeNum < A[u].out.size())
             {
-                for(int i = 0; i < edgeNum; i++)
+                for(size_t i = 0; i < edgeNum; i++)
                     inject(A, u, A[u].out[i], 1);
             }
             else
             {
-                int edgeOne = edgeNum/A[u].out.size();
-                for(int i = 0; i < A[u].out.size(); i++)
+                size_t edgeOne = edgeNum/A[u].out.size();
+                for(size_t i = 0; i < A[u].out.size(); i++)
                     inject(A, u, A[u].out[i], edgeOne);
-                int edgeRest = edgeNum - edgeOne*A[u].out.size();
+                size_t edgeRest = edgeNum - edgeOne*A[u].out.size();
                 inject(A, u, A[u].out[0], edgeRest);
             }
             return edgeNum;
@@ -62,8 +64,8 @@ double inject_anomaly(int scenario, outEdge* A, int n, int edgeNum)
         {
             int u = std::rand()%n;
             int* v = new int[edgeNum];
-            int added = 0;
-            int tried = 0;
+            size_t added = 0;
+            size_t tried = 0;
             while(added < edgeNum && tried < n)
             {
                 int v_n = std::rand()%n;
@@ -75,7 +77,7 @@ double inject_anomaly(int scenario, outEdge* A, int n, int edgeNum)
                 tried++;
             }
 
-            for(int i = 0; i < added; i++)
+            for(size_t i = 0; i < added; i++)
                 inject(A, u, v[i], 1);
 
             delete [] v;
@@ -86,13 +88,13 @@ double inject_anomaly(int scenario, outEdge* A, int n, int edgeNum)
             int* v = new int[edgeNum];
             int v_n = std::rand()%n;
             v[0] = v_n;
-            int added = 1;
-            int tried = 0;
+            size_t added = 1;
+            size_t tried = 0;
             while(added < edgeNum && tried < n)
             {
                 bool unseen = true;
                 v_n = std::rand()%n;
-                for(int i = 0; i < added; i++)
+                for(size_t i = 0; i < added; i++)
                 {
                     if(v_n == v[i])
                     {
@@ -114,9 +116,9 @@ double inject_anomaly(int scenario, outEdge* A, int n, int edgeNum)
                 tried++;
             }
 
-            for(int i = 0; i < added; i++)
+            for(size_t i = 0; i < added; i++)
             {
-                for(int j = i+1; j < added; j++)
+                for(size_t j = i+1; j < added; j++)
                     inject(A, v[i], v[j], 1);
             }
 
@@ -127,7 +129,7 @@ double inject_anomaly(int scenario, outEdge* A, int n, int edgeNum)
     return 0;
 }
 
-void inject_snapshot(int injectNum, int initSS, int testNum, vector<int>& snapshots, vector<int>& injectSS)
+void inject_snapshot(int injectNum, int initSS, int testNum, std::vector<int>& snapshots, std::vector<int>& injectSS)
 {
     int injected = 300;
     for(int i = 0; i < injectNum; i++)
@@ -140,6 +142,6 @@ void inject_snapshot(int injectNum, int initSS, int testNum, vector<int>& snapsh
         if(find(snapshots.begin(), snapshots.end(), injected) == snapshots.end())
             snapshots.push_back(injected);
     }
-    sort(snapshots.begin(), snapshots.end());
-    sort(injectSS.begin(), injectSS.end());
+    std::sort(snapshots.begin(), snapshots.end());
+    std::sort(injectSS.begin(), injectSS.end());
 }

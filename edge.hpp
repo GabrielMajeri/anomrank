@@ -1,5 +1,4 @@
-#ifndef EDGE
-#define EDGE
+#pragma once
 #include <vector>
 
 // Edge stream is espressed using timeEdge
@@ -35,5 +34,3 @@ struct outEdge
     std::vector<int> out;
     std::vector<int> weight;
 };
-
-#endif
