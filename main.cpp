@@ -19,6 +19,12 @@ int main(int argc, char *argv[])
 {
     clock_t start = clock();
 
+    if (argc != 8) {
+        std::cerr << "Need 8 parameters:\n";
+        std::cerr << argv[0] << " path delimiter timeStep initSS injectScene injectNum injectSize\n";
+        return 1;
+    }
+
     string path = argv[1];
     string delimeter = argv[2];
     int timeStep = atoi(argv[3]);
