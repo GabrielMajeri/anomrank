@@ -5,11 +5,11 @@
 #include <vector>
 #include "time.h"
 
-#include "accuracy.cpp"
-#include "anomaly_detect.cpp"
-#include "anomaly_inject.cpp"
-#include "pagerank.cpp"
-#include "read_data.cpp"
+#include "accuracy.hpp"
+#include "anomaly_detect.hpp"
+#include "anomaly_inject.hpp"
+#include "pagerank.hpp"
+#include "read_data.hpp"
 
 #define attackLimit 50
 
@@ -160,4 +160,3 @@ int main(int argc, char *argv[])
 
     return 1;
 }
-
