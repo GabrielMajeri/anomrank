@@ -1,5 +1,5 @@
 CXX ?= g++
-CXXFLAGS += -std=c++14 -Wall -Wextra -Werror -ggdb
+CXXFLAGS += -std=c++14 -Wall -Wextra -ggdb
 
 # Enable optimizations
 CXXFLAGS += -O3
@@ -10,7 +10,10 @@ OBJECTS := $(SOURCES:%.cpp=%.o)
 
 TEST_PARAMS := "./darpa.txt"  " " 60 256 0 50 70
 
-.PHONY: all build run clean
+# Name/path of valgrind executable
+VALGRIND ?= valgrind
+
+.PHONY: all build run clean valgrind
 
 all: build run
 
@@ -24,6 +27,9 @@ clean:
 
 anomrank: $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
+
+valgrind: anomrank
+	$(VALGRIND) --leak-check=full ./anomrank $(TEST_PARAMS)
 
 %.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
