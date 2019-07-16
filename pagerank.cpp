@@ -19,8 +19,8 @@ double* pagerank(outEdge* A, double* b, int n, int m, int version)
             b[i] = c*A[i].total_w/m;
     }
 
-    double* nq = new double[n];
-    double* nq_prev = new double[n];
+    std::vector<double> nq(n, 0);
+    std::vector<double> nq_prev(n);
     for(int i = 0; i < n; i++)
     {
         nq[i] = 0;
@@ -36,13 +36,13 @@ double* pagerank(outEdge* A, double* b, int n, int m, int version)
     {
         if(out_iter % 2 == 0)
         {
-            new_nq = nq;
-            old_nq = nq_prev;
+            new_nq = nq.data();
+            old_nq = nq_prev.data();
         }
         else
         {
-            new_nq = nq_prev;
-            old_nq = nq;
+            new_nq = nq_prev.data();
+            old_nq = nq.data();
         }
 
         for(int i = 0; i < n; i++)
@@ -92,9 +92,6 @@ double* pagerank(outEdge* A, double* b, int n, int m, int version)
         sum += b[i];
     for(int i = 0; i < n; i++)
         b[i] /= sum;
-
-    delete [] nq;
-    delete [] nq_prev;
 
     return b;
 }

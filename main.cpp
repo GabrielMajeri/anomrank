@@ -51,14 +51,8 @@ int main(int argc, char *argv[])
         std::cerr << "Negative snapshot count" << std::endl;
         return -1;
     }
-    bool* attack = new bool[testNum];
-
-    std::vector<double> anomScore(testNum, 0.0);
-    for(int i = 0; i < testNum; i++)
-    {
-        anomScore[i] = 0;
-        attack[i] = false;
-    }
+    std::vector<double> anomScore(testNum + 1, 0.0);
+    bool* attack = new bool[testNum + 1]{};
 
     // PAGERANK
     std::array<double*, 3> pagerank1;
@@ -128,8 +122,9 @@ int main(int argc, char *argv[])
         double score = compute_anomaly_score(snapshot, pagerank1.data(), pagerank2.data(), mean.data(), var.data(), n);
         if(snapshot >= initSS)
         {
-            anomScore[snapshot - initSS] = score; //min(score, previous_score);
-            attack[snapshot - initSS] = attackNum >= attackLimit;
+            int idx = snapshot - initSS;
+            anomScore[idx] = score; //min(score, previous_score);
+            attack[idx] = attackNum >= attackLimit;
             //previous_score = score;
         }
         attackNum = 0;
@@ -145,6 +140,20 @@ int main(int argc, char *argv[])
     // COMPUTE ACCURACY
     for(int i = 1; i < 17; i ++)
         compute_accuracy(anomScore.data(), attack, testNum, 50*i);
+
+    // FREE MEMORY
+    for(size_t i = 0; i < 4; i++)
+    {
+        delete[] mean[i];
+        delete[] var[i];
+    }
+    for(size_t i = 0; i < 3; i++)
+    {
+        delete[] pagerank1[i];
+        delete[] pagerank2[i];
+    }
+
+    delete[] attack;
 
     return 0;
 }

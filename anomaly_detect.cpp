@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <vector>
 
 double score_absum(double* s, int n)
 {
@@ -15,11 +16,8 @@ double score_absum(double* s, int n)
 
 void normalize(double** pr, int n, int timeNum)
 {
-    double* mean = new double[n];
-    double* var = new double[n];
-
-    for(int i = 0; i < n; i++)
-        mean[i] = var[i] = 0;
+    std::vector<double> mean(n, 0.0);
+    std::vector<double> var(n, 0.0);
 
     for(int i = 0; i < timeNum; i++)
     {
@@ -43,9 +41,6 @@ void normalize(double** pr, int n, int timeNum)
         for(int j = 0; j < timeNum; j++)
             pr[j][i] /= std::sqrt(var[i]);
     }
-
-    delete [] mean;
-    delete [] var;
 }
 
 void normalize_online(double* pr, double* mean, double* var, int n, double t)
@@ -71,12 +66,10 @@ double compute_anomaly_score(int t, double** pagerank1, double** pagerank2, doub
     int end_i = 4;
 
     // 1st & 2nd order derivatives
-    double** d = new double*[4];
+    std::vector<double> d[4];
     for(int i = 0; i < 4; i++)
     {
-        d[i] = new double[n];
-        for(int j = 0; j < n; j++)
-            d[i][j] = 0;
+        d[i].resize(n);
     }
 
     for(int i = 0; i < n; i ++)
@@ -94,12 +87,12 @@ double compute_anomaly_score(int t, double** pagerank1, double** pagerank2, doub
         }
     }
 
-    double* max = new double[4];
+    double max[4];
     double total_max = 1;
     for(int i = start_i; i < end_i; i ++)
     {
         max[i] = -1000;
-        normalize_online(d[i], mean[i], var[i], n, t);
+        normalize_online(d[i].data(), mean[i], var[i], n, t);
 
         for(int j = 0; j < n; j++)
         {
@@ -112,14 +105,10 @@ double compute_anomaly_score(int t, double** pagerank1, double** pagerank2, doub
 
     for(int i = start_i; i < end_i; i ++)
     {
-        double subscore = score_absum(d[i], n) * (total_max/max[i]);
+        double subscore = score_absum(d[i].data(), n) * (total_max/max[i]);
         // max
         score = std::max(score, subscore);
     }
-
-    for(int i = 0; i < 4; i++)
-        delete [] d[i];
-    delete [] d;
 
     return score;
 }

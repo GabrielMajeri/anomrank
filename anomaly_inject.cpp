@@ -63,7 +63,7 @@ double inject_anomaly(int scenario, outEdge* A, size_t n, size_t edgeNum)
         case 3: // distribute whole edges to unseen edges from one source
         {
             int u = std::rand()%n;
-            int* v = new int[edgeNum];
+            std::vector<int> v(edgeNum);
             size_t added = 0;
             size_t tried = 0;
             while(added < edgeNum && tried < n)
@@ -80,12 +80,11 @@ double inject_anomaly(int scenario, outEdge* A, size_t n, size_t edgeNum)
             for(size_t i = 0; i < added; i++)
                 inject(A, u, v[i], 1);
 
-            delete [] v;
             return added;
         }
         case 4:
         {
-            int* v = new int[edgeNum];
+            std::vector<int> v(edgeNum);
             int v_n = std::rand()%n;
             v[0] = v_n;
             size_t added = 1;
@@ -122,7 +121,6 @@ double inject_anomaly(int scenario, outEdge* A, size_t n, size_t edgeNum)
                     inject(A, v[i], v[j], 1);
             }
 
-            delete [] v;
             return added*(added-1);
         }
     }
